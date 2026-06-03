@@ -8,7 +8,7 @@ set -euo pipefail
 [ "$(id -u)" = "0" ] || { echo "нужен root: sudo bash deploy.sh"; exit 1; }
 
 SHEETS_URL="${1:-}"
-HERE="$(cd "$(dirname "$0")" && pwd)"
+RAW="https://raw.githubusercontent.com/Tovarish666/modlink-client/main"
 
 echo "[1/5] пакеты"
 export DEBIAN_FRONTEND=noninteractive
@@ -24,8 +24,15 @@ systemctl disable --now sing-box.service 2>/dev/null || true
 echo "  $(sing-box version | head -1)"
 
 echo "[3/5] modlink-client"
-install -m 0755 "$HERE/modlink-client.py" /usr/local/bin/modlink-client
 mkdir -p /etc/modlink-client/singbox
+# если запускают через pipe (curl|bash) — скачиваем сами; иначе берём рядом
+HERE="$(cd "$(dirname "${BASH_SOURCE[0]:-/dev/stdin}")" 2>/dev/null && pwd || echo "")"
+if [ -f "$HERE/modlink-client.py" ]; then
+  install -m 0755 "$HERE/modlink-client.py" /usr/local/bin/modlink-client
+else
+  curl -fsSL "$RAW/modlink-client.py" -o /usr/local/bin/modlink-client
+  chmod 0755 /usr/local/bin/modlink-client
+fi
 echo "  /usr/local/bin/modlink-client"
 
 echo "[4/5] sysctl"
