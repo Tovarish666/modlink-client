@@ -92,10 +92,11 @@ cat > "$CFG" << EOF
     "stack": "system"
   }],
   "outbounds": [{
-    "type": "http",
+    "type": "socks",
     "tag": "proxy",
     "server": "${P_HOST}",
     "server_port": ${P_PORT},
+    "version": "5",
     "username": "${LOGIN}",
     "password": "${PASS}"
   }],
