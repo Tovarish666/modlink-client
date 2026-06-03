@@ -25,14 +25,8 @@ echo "  $(sing-box version | head -1)"
 
 echo "[3/5] modlink-client"
 mkdir -p /etc/modlink-client/singbox
-# если запускают через pipe (curl|bash) — скачиваем сами; иначе берём рядом
-HERE="$(cd "$(dirname "${BASH_SOURCE[0]:-/dev/stdin}")" 2>/dev/null && pwd || echo "")"
-if [ -f "$HERE/modlink-client.py" ]; then
-  install -m 0755 "$HERE/modlink-client.py" /usr/local/bin/modlink-client
-else
-  curl -fsSL "$RAW/modlink-client.py" -o /usr/local/bin/modlink-client
-  chmod 0755 /usr/local/bin/modlink-client
-fi
+curl -fsSL "$RAW/modlink-client.py" -o /usr/local/bin/modlink-client
+chmod 0755 /usr/local/bin/modlink-client
 echo "  /usr/local/bin/modlink-client"
 
 echo "[4/5] sysctl"
